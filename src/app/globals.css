@@ -1,76 +1,187 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
 
-  @layer base {
-    :root {
-      --background: 0 0% 100%;
-      --foreground: 20 14.3% 4.1%;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
 
-      --card: 0 0% 100%;
-      --card-foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
 
-      --popover: 0 0% 100%;
-      --popover-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
 
-      --primary: 24 9.8% 10%;
-      --primary-foreground: 60 9.1% 97.8%;
+    --primary: 24 9.8% 10%;
+    --primary-foreground: 60 9.1% 97.8%;
 
-      --secondary: 60 4.8% 95.9%;
-      --secondary-foreground: 24 9.8% 10%;
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 24 9.8% 10%;
 
-      --muted: 60 4.8% 95.9%;
-      --muted-foreground: 25 5.3% 44.7%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
 
-      --accent: 60 4.8% 95.9%;
-      --accent-foreground: 24 9.8% 10%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 24 9.8% 10%;
 
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 60 9.1% 97.8%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
 
-      --border: 20 5.9% 90%;
-      --input: 20 5.9% 90%;
-      --ring: 20 14.3% 4.1%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --ring: 20 14.3% 4.1%;
 
-      --radius: 0.5rem;
-    }
-
-    .dark {
-      --background: 20 14.3% 4.1%;
-      --foreground: 60 9.1% 97.8%;
-
-      --card: 20 14.3% 4.1%;
-      --card-foreground: 60 9.1% 97.8%;
-
-      --popover: 20 14.3% 4.1%;
-      --popover-foreground: 60 9.1% 97.8%;
-
-      --primary: 60 9.1% 97.8%;
-      --primary-foreground: 24 9.8% 10%;
-
-      --secondary: 12 6.5% 15.1%;
-      --secondary-foreground: 60 9.1% 97.8%;
-
-      --muted: 12 6.5% 15.1%;
-      --muted-foreground: 24 5.4% 63.9%;
-
-      --accent: 12 6.5% 15.1%;
-      --accent-foreground: 60 9.1% 97.8%;
-
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 60 9.1% 97.8%;
-
-      --border: 12 6.5% 15.1%;
-      --input: 12 6.5% 15.1%;
-      --ring: 24 5.7% 82.9%;
-    }
+    --radius: 0.5rem;
   }
 
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 60 9.1% 97.8%;
+
+    --card: 20 14.3% 4.1%;
+    --card-foreground: 60 9.1% 97.8%;
+
+    --popover: 20 14.3% 4.1%;
+    --popover-foreground: 60 9.1% 97.8%;
+
+    --primary: 60 9.1% 97.8%;
+    --primary-foreground: 24 9.8% 10%;
+
+    --secondary: 12 6.5% 15.1%;
+    --secondary-foreground: 60 9.1% 97.8%;
+
+    --muted: 12 6.5% 15.1%;
+    --muted-foreground: 24 5.4% 63.9%;
+
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 60 9.1% 97.8%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 60 9.1% 97.8%;
+
+    --border: 12 6.5% 15.1%;
+    --input: 12 6.5% 15.1%;
+    --ring: 24 5.7% 82.9%;
   }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* calculator.module.css */
+
+.calculatorContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.inputField {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submitButton {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #0056b3;
+}
+
+/* BankersAlgorithm.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.form-input {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* styles.css */
+
+.bankers-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.bankers-form-container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.bankers-form-container form div {
+  margin-bottom: 15px;
+}
+
+.bankers-form-container label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.bankers-form-container input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.bankers-form-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bankers-form-container button:hover {
+  background-color: #0056b3;
+}
+
+.bankers-form-container p {
+  margin: 5px 0;
+}
