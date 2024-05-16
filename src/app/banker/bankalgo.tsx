@@ -1,107 +1,151 @@
 'use client'
-'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const BankersAlgorithmForm = () => {
-    // State variables for available resources, maximum demand, allocated resources, and need
-    const [availableResources, setAvailableResources] = useState([]);
-    const [maxDemand, setMaxDemand] = useState([]);
-    const [allocatedResources, setAllocatedResources] = useState([]);
-    const [need, setNeed] = useState([]);
-    const [isSafe, setIsSafe] = useState(null); // Initially null until safety check is performed
+type Process = {
+    pid: number;
+    max: number[];
+    allot: number[];
+};
 
-    // Function to calculate the remaining need for each process
-    const calculateNeed = () => {
-        const newNeed = [];
-        for (let i = 0; i < maxDemand.length; i++) {
-            const allocated = allocatedResources[i] ? allocatedResources[i].split(',').map(Number) : [];
-            const max = maxDemand[i].split(',').map(Number);
-            const needForProcess = max.map((m, j) => m - (allocated[j] || 0));
-            newNeed.push(needForProcess);
+type Resource = {
+    rid: string;
+    count: number;
+};
+
+const BankersAlgorithmForm: React.FC = () => {
+    const [processes, setProcesses] = useState<Process[]>([]);
+    const [resources, setResources] = useState<Resource[]>([]);
+    const [maxInput, setMaxInput] = useState('');
+    const [allocInput, setAllocInput] = useState('');
+    const [availInput, setAvailInput] = useState('');
+    const [safeSequence, setSafeSequence] = useState<number[]>([]);
+
+    const handleAddProcess = () => {
+        const maxArray = maxInput.split(',').map(Number);
+        const allotArray = allocInput.split(',').map(Number);
+
+        if (maxArray.length !== allotArray.length || maxArray.length !== resources.length) {
+            alert('The number of resources in Max Need and Allocated Resources must match the number of available resources.');
+            return;
         }
-        setNeed(newNeed);
+
+        const pid = processes.length;
+
+        setProcesses([...processes, { pid, max: maxArray, allot: allotArray }]);
+        setMaxInput('');
+        setAllocInput('');
     };
 
-    // Function to perform the safety check
-    const performSafetyCheck = () => {
-        calculateNeed();
-        let needArray = need.map(n => [...n]);
-        let available = [...availableResources];
-        let finish = new Array(maxDemand.length).fill(false);
-        let work = [...available];
+    const handleSetResources = () => {
+        const resourceArray = availInput.split(',').map((count, index) => ({ rid: `R${index}`, count: Number(count) }));
+        setResources(resourceArray);
+        setAvailInput('');
+    };
 
-        while (true) {
-            let found = false;
-            for (let i = 0; i < needArray.length; i++) {
-                if (!finish[i] && needArray[i].every((n, j) => n <= work[j])) {
-                    work = work.map((w, j) => w + needArray[i][j]);
-                    finish[i] = true;
-                    found = true;
-                    break;
+    const checkSafeState = () => {
+        const available: Record<string, number> = resources.reduce((acc, curr) => {
+            acc[curr.rid] = curr.count;
+            return acc;
+        }, {} as Record<string, number>);
+
+        const needMatrix = processes.map(process => {
+            const need = process.max.map((max, index) => max - process.allot[index]);
+            return { pid: process.pid, need };
+        });
+
+        const canExecute = (need: number[], available: Record<string, number>): boolean => {
+            return need.every((value, index) => {
+                const resourceId = resources[index].rid;
+                return value <= available[resourceId];
+            });
+        };
+
+        const safeSequence: number[] = [];
+        const executed = new Array(processes.length).fill(false);
+
+        const findSafeSequence = () => {
+            let processExecutedInThisRound = false;
+            for (let i = 0; i < processes.length; i++) {
+                if (!executed[i] && canExecute(needMatrix[i].need, available)) {
+                    processes[i].allot.forEach((allot, index) => {
+                        const resourceId = resources[index].rid;
+                        available[resourceId] += allot;
+                    });
+                    safeSequence.push(processes[i].pid);
+                    executed[i] = true;
+                    processExecutedInThisRound = true;
                 }
             }
-            if (!found) break;
-        }
+            return processExecutedInThisRound;
+        };
 
-        setIsSafe(!finish.includes(false));
+        while (findSafeSequence());
+
+        const isSafe = executed.every(v => v);
+
+        console.log(`System is ${isSafe ? '' : 'not '}in a safe state.`);
+        if (isSafe) {
+            setSafeSequence([...safeSequence]);
+        } else {
+            setSafeSequence([]);
+        }
     };
-
-    useEffect(() => {
-        if (maxDemand.length > 0 && allocatedResources.length > 0) {
-            calculateNeed();
-        }
-    }, [maxDemand, allocatedResources]);
 
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto' }}>
             <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Banker's Algorithm Simulation</h1>
             <form style={{ marginBottom: '20px' }}>
                 <div style={{ marginBottom: '10px' }}>
-                    <label style={{ marginRight: '10px' }}>Available Resources</label>
+                    <label style={{ marginRight: '10px' }}>Available</label>
                     <input
                         type="text"
+                        value={availInput}
+                        onChange={(e) => setAvailInput(e.target.value)}
                         style={{ width: '300px', padding: '5px' }}
                         placeholder="Enter available resources (comma-separated)"
-                        value={availableResources.join(',')}
-                        onChange={(e) => setAvailableResources(e.target.value.split(','))}
                     />
+                    <button type="button" onClick={handleSetResources} style={{ padding: '8px 16px', marginLeft: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Set Resources</button>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
-                    <label style={{ marginRight: '10px' }}>Maximum Demand</label>
+                    <label style={{ marginRight: '10px' }}>Max Need</label>
                     <input
                         type="text"
+                        value={maxInput}
+                        onChange={(e) => setMaxInput(e.target.value)}
                         style={{ width: '300px', padding: '5px' }}
-                        placeholder="Enter maximum demand (comma-separated)"
-                        value={maxDemand.join(',')}
-                        onChange={(e) => setMaxDemand(e.target.value.split(','))}
+                        placeholder="Enter Max Need (comma-separated)"
                     />
                 </div>
                 <div style={{ marginBottom: '20px' }}>
-                    <label style={{ marginRight: '10px' }}>Allocated Resources</label>
+                    <label style={{ marginRight: '10px' }}>Allocation</label>
                     <input
                         type="text"
+                        value={allocInput}
+                        onChange={(e) => setAllocInput(e.target.value)}
                         style={{ width: '300px', padding: '5px' }}
                         placeholder="Enter allocated resources (comma-separated)"
-                        value={allocatedResources.join(',')}
-                        onChange={(e) => setAllocatedResources(e.target.value.split(','))}
                     />
+                    <button type="button" onClick={handleAddProcess} style={{ padding: '8px 16px', marginLeft: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Add Process</button>
                 </div>
-                <button type="button" onClick={performSafetyCheck} style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Check Safety</button>
-                {isSafe !== null && (isSafe ? <p style={{ color: 'green', marginTop: '10px' }}>The system is in a safe state.</p> : <p style={{ color: 'red', marginTop: '10px' }}>The system is not in a safe state.</p>)}
+                <button type="button" style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }} onClick={checkSafeState}>Check Safety</button>
             </form>
 
-            {/* Display Banker's Algorithm state */}
             <div>
-                <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Banker's Algorithm State</h2>
-                {maxDemand.map((max, index) => (
-                    <div key={index} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px', borderRadius: '4px' }}>
-                        <p style={{ marginBottom: '5px', fontWeight: 'bold' }}>Process {index}</p>
-                        <p>Maximum Demand: {max}</p>
-                        <p>Allocated Resources: {allocatedResources[index] || '-'}</p>
-                        <p>Remaining Need: {need[index] ? need[index].join(', ') : '-'}</p>
-                        <p>Finished: {isSafe !== null ? (isSafe ? "Yes" : "No") : "-"}</p>
-                    </div>
-                ))}
+                <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Processes</h2>
+                <ul>
+                    {processes.map(process => (
+                        <li key={process.pid}>
+                            <strong>Process {process.pid}:</strong> Max: {process.max.join(', ')} | Alloc: {process.allot.join(', ')}
+                        </li>
+                    ))}
+                </ul>
+                <h2 style={{ textAlign: 'center', marginBottom: '10px' }}>Safe Sequence</h2>
+                {safeSequence.length > 0 ? (
+                    <p>{safeSequence.map(pid => `P${pid}`).join(' -> ')}</p>
+
+                ) : (
+                    <p>No safe sequence found.</p>
+                )}
             </div>
         </div>
     );
