@@ -93,7 +93,9 @@ const BankersAlgorithmForm: React.FC = () => {
 
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto' }}>
-            <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>Banker's Algorithm Simulation</h1>
+            <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>
+                Banker&apos;s Algorithm Simulation
+            </h1>
             <form style={{ marginBottom: '20px' }}>
                 <div style={{ marginBottom: '10px' }}>
                     <label style={{ marginRight: '10px' }}>Available</label>
