@@ -24,13 +24,13 @@ export default function FrontPage() {
           style={{
             height: '250px',
             width: '350px',
-            backgroundColor: '#E9CF4B',
+            backgroundColor: '#FFC0CB',
             borderRadius: '10px',
             paddingBottom: '25px',
 
           }}
         >
-          <div className="flex h-[60px] items-center  px-6 bg-[#E9CF4B]">
+          <div className="flex h-[60px] items-center  px-6 bg-[#FFC0CB]">
             <Image alt="logo " src={logo} height={50} style={{ marginRight: 10 }} />
             <span className="flex items-center" style={{ fontSize: 36 }}>|</span>
             <span className="flex items-center font-semibold">OS Final Exam</span>
